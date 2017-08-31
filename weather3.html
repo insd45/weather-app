@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Weather App</title>
+        <style>
+            .weather-app{
+                border: solid black 2px;
+                background-color: white;
+                border-radius: 5px;
+                position: relative;
+                width: 450px;
+                margin: 50px auto auto auto;
+                padding: 50px 50px;
+            }
+            
+            #wrap {
+                margin: auto;
+                text-align: center;
+            }
+            
+            #scale {
+                color: blue;
+            }
+            
+            #button {
+                float: right;
+            }
+        </style>
+    </head>
+    <body style="background-color:gray;">
+        <br>
+        <!--<div class="weather-app">
+            <div class="location"><span id="location">Unknown</span></div>
+            <div class="temperature"><span id="temperature">0</span>&deg;</div>
+            <!--<img id="icon" width="50px" src="SKYCONS">-->
+        <!--</div>-->
+       <!-- <p>Click the button to get your coordinates.</p>
+
+    <button onclick="getLocation()">Try It</button>
+
+    <p id="demo"></p> -->
+        <div class="weather-app">
+            <div id="wrap">
+                <div class="location"><h1><span id="location">Loading...</span></h1></div>
+                <div class="temperature"><h2><span id="temperature">Loading...</span> &deg;<span id="scale">C</span></h2></div>
+                <img id="icon" width="75px" src="">
+                <button type="button" onclick="changeScale()" value="Change Scale" id="button">Change Scale</button>
+            </div>
+        </div>
+
+    <script>
+    var x = document.getElementById("demo");
+    var temp = document.getElementById("temperature");
+    var loc = document.getElementById("location");
+    var icon = document.getElementById("icon");
+    var lat;
+    var lng;
+
+    window.onload = function() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        } else { 
+            x.innerHTML = "Geolocation is not supported by this browser.";
+        }
+    }
+
+    function showPosition(position) {
+        lat = position.coords.latitude;
+        lng = position.coords.longitude;
+        //x.innerHTML = "Latitude: " + lat + 
+        //"<br>Longitude: " + lng;
+
+        updateByLatAndLng(lat, lng);
+    }
+
+    function updateByLatAndLng(lat, lng){
+        var url = "https://fcc-weather-api.glitch.me/api/current?lat=" + lat + "&lon=" + lng;
+        sendRequest(url);
+    }
+
+    function sendRequest(url){
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if(xmlhttp.readyState == 4 && xmlhttp.status == 200){
+                var data = JSON.parse(xmlhttp.responseText);
+                var weather = {};
+                weather.icon = data.weather[0].icon;
+                weather.loc = data.name;
+                weather.temp = data.main.temp;
+                update(weather);
+            }
+        };
+        xmlhttp.open("GET", url, true);
+        xmlhttp.send();
+    }
+
+    function update(weather) {
+        loc.innerHTML = weather.loc;
+        temp.innerHTML = weather.temp;
+        icon.src = weather.icon;
+    }
+        
+    function changeScale() {
+        //If the span w id scale == C, change to F. Then apply span w id temperature = (T * 1.8) + 32
+        //If the span w id scale == F, change to C. Then apply span w id temperature = (T - 32) / 1.8
+        var x = document.getElementById("scale").innerHTML;
+        var y = document.getElementById("temperature").innerHTML;
+        console.log("PENIS");
+        if(x == "C"){
+            x = "F";
+            var h = parseFloat(y);
+            h = (h * 1.8) + 32;
+            document.getElementById("scale").innerHTML = x;
+            document.getElementById("temperature").innerHTML = h;
+        } else if (x == "F"){
+            x = "C";
+            var i = parseFloat(y);
+            i = (i - 32) / 1.8;
+            document.getElementById("scale").innerHTML = x;
+            document.getElementById("temperature").innerHTML = i;
+        } else {
+            console.log("Error");
+        }
+    }
+    </script>
+
+    </body>
+</html>
